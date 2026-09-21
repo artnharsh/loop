@@ -45,6 +45,13 @@ class LockRepository(private val context: Context) {
         }
     }
 
+    suspend fun addPackagesToLock(newPackages: Set<String>) {
+        context.dataStore.edit { preferences ->
+            val currentPackages = preferences[BLOCKED_PACKAGES_KEY] ?: emptySet()
+            preferences[BLOCKED_PACKAGES_KEY] = currentPackages + newPackages
+        }
+    }
+
     suspend fun clearLockIfExpired() {
         context.dataStore.edit { preferences ->
             val currentEndTime = preferences[LOCK_END_TIME_KEY] ?: 0L

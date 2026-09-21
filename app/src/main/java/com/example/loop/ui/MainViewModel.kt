@@ -40,6 +40,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _selectedPackages = MutableStateFlow<Set<String>>(emptySet())
     val selectedPackages: StateFlow<Set<String>> = _selectedPackages.asStateFlow()
 
+    private val _isAddingToActiveLock = MutableStateFlow(false)
+    val isAddingToActiveLock: StateFlow<Boolean> = _isAddingToActiveLock.asStateFlow()
+
     init {
         loadInstalledApps()
         viewModelScope.launch {
@@ -108,9 +111,33 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun toggleSelection(packageName: String) {
+        // Prevent deselecting already blocked packages if we are adding to an active lock
+        if (_isAddingToActiveLock.value && lockState.value.blockedPackages.contains(packageName)) return
+        
         _selectedPackages.value = _selectedPackages.value.toMutableSet().apply {
             if (contains(packageName)) remove(packageName) else add(packageName)
         }
+    }
+
+    fun startAddingToLock() {
+        _isAddingToActiveLock.value = true
+        _selectedPackages.value = lockState.value.blockedPackages
+    }
+
+    fun cancelAddingToLock() {
+        _isAddingToActiveLock.value = false
+        _selectedPackages.value = emptySet()
+    }
+
+    fun confirmAddingToLock() {
+        val newPackages = _selectedPackages.value - lockState.value.blockedPackages
+        if (newPackages.isNotEmpty()) {
+            viewModelScope.launch {
+                lockRepository.addPackagesToLock(newPackages)
+            }
+        }
+        _isAddingToActiveLock.value = false
+        _selectedPackages.value = emptySet()
     }
 
     fun startLock(durationMs: Long) {

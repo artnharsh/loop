@@ -1,0 +1,989 @@
+# Master Development Instructions
+
+Set up and develop this repository as a **clean, portable, AI-friendly software project**.
+
+I am currently using Antigravity, but I may later switch to Claude Code, Codex, Cursor, Windsurf, VS Code, or another AI coding environment.
+
+Therefore:
+
+> **The repository itself must always be the source of truth.**
+
+The project must NEVER depend on Antigravity conversation history, AI memory, IDE state, or proprietary context features to understand or continue development.
+
+Another AI with ZERO access to our previous conversations should be able to clone/open this repository, understand the project, and continue development safely.
+
+---
+
+# 1. Core Principle
+
+Follow this priority:
+
+**Correctness → Reliability → Simplicity → Maintainability → UI polish**
+
+Do NOT over-engineer.
+
+Prefer:
+
+* simple architecture
+* standard technologies
+* minimal dependencies
+* small focused files
+* descriptive names
+* testable business logic
+* explicit behaviour
+* documented architectural decisions
+
+Avoid:
+
+* unnecessary abstractions
+* unnecessary design patterns
+* unnecessary dependencies
+* huge files
+* duplicate logic
+* vendor lock-in
+* AI-generated complexity
+* rewriting working code without a reason
+
+Always make the **smallest coherent change** required to solve a problem.
+
+---
+
+# 2. Repository Must Be AI-IDE Independent
+
+Never make important project knowledge available only through:
+
+* Antigravity memory
+* Antigravity rules
+* Claude memory
+* `.cursor`
+* `.windsurf`
+* IDE workspace state
+* MCP configuration
+* previous AI conversations
+* proprietary AI features
+
+IDE-specific files may exist when useful, but they must only supplement the repository documentation.
+
+Canonical project knowledge must live in normal Markdown files committed to Git.
+
+---
+
+# 3. Required Project Context
+
+Maintain:
+
+```text
+/
+├── AGENTS.md
+├── README.md
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── DECISIONS.md
+│   ├── TASKS.md
+│   └── CHANGELOG.md
+└── ...
+```
+
+Do not create documentation just for the sake of documentation.
+
+Keep these files concise, accurate and useful.
+
+---
+
+# 4. Root AGENTS.md
+
+`/AGENTS.md` is the main instruction file for any AI coding agent.
+
+It should contain:
+
+## Project Overview
+
+What the project does.
+
+## Tech Stack
+
+Languages, frameworks, libraries and important tools.
+
+## Repository Structure
+
+Major directories and their responsibilities.
+
+## Architecture
+
+Short architectural overview.
+
+## Development Commands
+
+How to:
+
+* build
+* run
+* test
+* lint
+* package
+
+## Coding Conventions
+
+Important conventions followed throughout the repository.
+
+## Project Invariants
+
+Rules that must NEVER accidentally change.
+
+## Security Rules
+
+Secrets, permissions, sensitive functionality and other security constraints.
+
+## Testing Rules
+
+Expected testing behaviour.
+
+## Definition of Done
+
+Conditions required before considering a task complete.
+
+## Module Context Map
+
+Links to folder-specific `AGENTS.md` files.
+
+Keep root `AGENTS.md` concise enough that an AI can read it at the beginning of every development task.
+
+---
+
+# 5. Folder-Wise Context
+
+Use hierarchical context.
+
+Important modules/directories may contain their own:
+
+```text
+AGENTS.md
+```
+
+For example:
+
+```text
+/
+├── AGENTS.md
+├── docs/
+└── app/
+    └── ...
+        ├── blocking/
+        │   ├── AGENTS.md
+        │   └── ...
+        │
+        ├── timer/
+        │   ├── AGENTS.md
+        │   └── ...
+        │
+        ├── data/
+        │   ├── AGENTS.md
+        │   └── ...
+        │
+        └── ui/
+            ├── AGENTS.md
+            └── ...
+```
+
+Do NOT automatically create `AGENTS.md` in every folder.
+
+Create one only when a directory represents an important subsystem with its own:
+
+* responsibilities
+* invariants
+* architecture
+* dependencies
+* modification rules
+
+Folder-level context should supplement, not duplicate, root context.
+
+---
+
+# 6. Context Resolution
+
+When modifying a file, conceptually read context from:
+
+**Global → Module → Code → Tests**
+
+For example, when modifying:
+
+```text
+timer/StrictTimerManager.kt
+```
+
+consider:
+
+1. `/AGENTS.md`
+2. relevant `/docs` information
+3. nearest applicable `timer/AGENTS.md`
+4. relevant source files
+5. relevant tests
+
+The nearest folder context provides specialized instructions.
+
+Root-level project invariants always remain applicable.
+
+Folder instructions must never silently override fundamental project rules.
+
+---
+
+# 7. Folder AGENTS.md Format
+
+Keep module context small.
+
+Prefer:
+
+```markdown
+# Module: Timer
+
+## Purpose
+What this module owns.
+
+## Key Files
+Important files and their responsibilities.
+
+## Public Interface
+Classes/functions other modules should use.
+
+## Invariants
+Rules that must remain true.
+
+## Dependencies
+What this module depends on.
+
+## Used By
+Which modules consume it.
+
+## Modification Rules
+Important things to understand before changing it.
+
+## Testing
+Relevant tests and commands.
+```
+
+Do NOT copy source code into context files.
+
+Document **why and constraints**, not things easily discovered by reading obvious code.
+
+---
+
+# 8. Context Map
+
+Root `AGENTS.md` must contain:
+
+```markdown
+## Module Context Map
+
+| Area | Context |
+|---|---|
+| Blocking | `path/to/blocking/AGENTS.md` |
+| Timer | `path/to/timer/AGENTS.md` |
+| Persistence | `path/to/data/AGENTS.md` |
+| UI | `path/to/ui/AGENTS.md` |
+```
+
+Only include modules that actually exist.
+
+Keep this map synchronized with repository structure.
+
+---
+
+# 9. README.md
+
+README is primarily for a human developer.
+
+Include:
+
+* What the project is
+* Main features
+* Requirements
+* Installation
+* Setup
+* Build instructions
+* Running instructions
+* Testing
+* Important permissions/configuration
+* Basic troubleshooting
+
+Do not turn README into internal AI memory.
+
+---
+
+# 10. ARCHITECTURE.md
+
+Maintain:
+
+```text
+docs/ARCHITECTURE.md
+```
+
+Document significant architecture such as:
+
+* major components
+* responsibilities
+* data flow
+* state management
+* persistence
+* services
+* important platform APIs
+* important interactions between modules
+
+Update this document when architecture materially changes.
+
+Avoid documenting trivial implementation details.
+
+---
+
+# 11. DECISIONS.md
+
+Maintain:
+
+```text
+docs/DECISIONS.md
+```
+
+Record important technical decisions.
+
+Use:
+
+```markdown
+## Decision
+
+### Context
+What problem existed?
+
+### Decision
+What did we choose?
+
+### Reason
+Why?
+
+### Alternatives
+What else was considered?
+
+### Consequences
+What trade-offs result?
+```
+
+This is particularly important when something may look unusual to another AI.
+
+Another AI should understand:
+
+> "This was intentional. Do not casually replace it."
+
+Do not record trivial decisions.
+
+---
+
+# 12. TASKS.md
+
+Maintain:
+
+```text
+docs/TASKS.md
+```
+
+Use:
+
+```markdown
+# Current
+
+# Next
+
+# Completed
+
+# Known Issues
+
+# Technical Debt
+```
+
+Keep it concise.
+
+If work stops halfway through something, record:
+
+* what was being implemented
+* what already works
+* what remains
+* relevant files
+* known problems
+* recommended next action
+
+Another AI should be able to continue without previous chat history.
+
+---
+
+# 13. CHANGELOG.md
+
+Record meaningful user-visible or architectural changes.
+
+Do not log every tiny edit.
+
+---
+
+# 14. Context Maintenance
+
+Documentation must evolve with the code.
+
+After significant changes, determine whether you need to update:
+
+* root `AGENTS.md`
+* module `AGENTS.md`
+* `ARCHITECTURE.md`
+* `DECISIONS.md`
+* `TASKS.md`
+* `CHANGELOG.md`
+
+Never knowingly leave documentation contradicting the implementation.
+
+Do NOT modify documentation unnecessarily when nothing relevant changed.
+
+---
+
+# 15. Avoid Context Pollution
+
+Context files should NOT contain:
+
+* entire source files
+* huge code snippets
+* build logs
+* temporary debugging output
+* AI conversation transcripts
+* abandoned brainstorming
+* obsolete implementation details
+* information obvious from reading the code
+
+Prefer:
+
+> TimerManager owns deadline validation. Active deadlines may move forward but never backward. See `StrictTimerManager.kt`.
+
+instead of copying the implementation.
+
+---
+
+# 16. Context Loading Efficiency
+
+Before making changes, determine the smallest relevant scope.
+
+For a timer issue, inspect:
+
+* root `AGENTS.md`
+* timer context
+* relevant architecture/decisions
+* timer implementation
+* timer tests
+
+Do NOT unnecessarily load unrelated modules.
+
+For a cross-module change, inspect the context for all affected modules.
+
+The goal is:
+
+> **Give the AI enough context to be correct without flooding it with the entire repository.**
+
+---
+
+# 17. Development Workflow
+
+For every non-trivial task:
+
+### Step 1 — Understand
+
+Read:
+
+* root `AGENTS.md`
+* applicable folder context
+* relevant architecture/decisions
+* relevant existing implementation
+
+Do not start coding before understanding the existing system.
+
+### Step 2 — Plan
+
+Briefly determine:
+
+* files affected
+* behaviour changing
+* potential risks
+* tests required
+
+Do not create enormous planning documents for small changes.
+
+### Step 3 — Implement
+
+Make the smallest coherent change.
+
+Do not refactor unrelated working code.
+
+### Step 4 — Validate
+
+Where applicable:
+
+* compile
+* run tests
+* lint
+* verify expected behaviour
+* inspect errors/warnings
+
+Never claim something works simply because the generated code looks correct.
+
+### Step 5 — Review
+
+Review your own diff.
+
+Look for:
+
+* regressions
+* accidental behaviour changes
+* duplicated code
+* unnecessary dependencies
+* debug code
+* security problems
+* broken project invariants
+
+### Step 6 — Update Context
+
+Update documentation/context only where the implementation materially changed.
+
+---
+
+# 18. Testing Philosophy
+
+Business-critical logic should be testable independently from UI where practical.
+
+Test:
+
+* normal behaviour
+* boundary conditions
+* invalid state
+* persistence behaviour
+* important invariants
+* regression cases
+
+When fixing a meaningful bug, add a regression test when practical.
+
+Do not create meaningless tests solely to increase test count.
+
+---
+
+# 19. Git Discipline
+
+Keep the repository clean.
+
+Never commit:
+
+* build directories
+* IDE caches
+* temporary files
+* secrets
+* private keys
+* credentials
+* machine-specific configuration
+* unnecessary generated artifacts
+
+Maintain `.gitignore`.
+
+Keep changes focused.
+
+Do not modify unrelated files just because an AI thinks they could be "improved."
+
+Use clear commit messages describing the actual change.
+
+---
+
+# 20. Dependency Discipline
+
+Before adding a dependency, ask:
+
+1. Is it actually necessary?
+2. Can the platform already do this?
+3. Is the dependency maintained?
+4. Does it introduce unnecessary complexity?
+5. Does it make portability worse?
+
+Prefer platform functionality when it is reasonably simple.
+
+Do not introduce libraries for trivial tasks.
+
+---
+
+# 21. Comments
+
+Do not comment obvious code.
+
+Bad:
+
+```text
+increment counter // increments counter
+```
+
+Good comments explain:
+
+* why something is implemented unusually
+* platform-specific limitations
+* important invariants
+* non-obvious workarounds
+* security-sensitive behaviour
+
+Comments should primarily explain **why**.
+
+---
+
+# 22. AI Behaviour
+
+Do NOT:
+
+* rewrite working architecture without asking
+* invent requirements
+* silently change product behaviour
+* add "helpful" features that were not requested
+* introduce unnecessary frameworks
+* hide errors
+* claim tests passed without running them
+* remove functionality without understanding why it exists
+* assume unusual behaviour is a bug
+
+If an important architectural decision is unclear, inspect:
+
+1. code
+2. tests
+3. `AGENTS.md`
+4. folder context
+5. `ARCHITECTURE.md`
+6. `DECISIONS.md`
+
+before changing it.
+
+---
+
+# 23. StrictBlock Product Invariants
+
+For this specific project, these rules are fundamental.
+
+The application should remain intentionally simple:
+
+**Select apps → choose timer → confirm → apps remain blocked until deadline.**
+
+During an ACTIVE strict session:
+
+* NO pause
+* NO stop
+* NO cancel
+* NO break
+* NO temporary unlock
+* NO emergency in-app unlock
+* NO PIN bypass
+* NO password bypass
+* NO advertisement-based bypass
+* NO removing blocked applications
+* NO weakening the active block
+* NO shortening the deadline
+
+If extending a session is implemented:
+
+```text
+newDeadline >= currentDeadline
+```
+
+must always remain true.
+
+Never add an in-app early-exit mechanism unless I explicitly request one.
+
+The absence of an early-unlock feature is **intentional product behaviour, not missing UX**.
+
+Do not "improve the user experience" by adding one.
+
+---
+
+# 24. StrictBlock Safety Invariants
+
+The application must protect against accidental critical-app blocking.
+
+StrictBlock itself must NEVER be blockable.
+
+Critical Android functionality should not be blockable, including where identifiable:
+
+* Settings
+* System UI
+* launcher/home
+* Phone/Dialer
+* emergency-related functionality
+* Package Installer
+* Permission Controller
+* other components required for basic device operation
+
+Prefer preventing selection when uncertain about whether blocking an application could make the phone difficult to operate.
+
+Always show a final confirmation before starting a strict session.
+
+---
+
+# 25. StrictBlock Persistence
+
+An active session must survive:
+
+* closing StrictBlock
+* process death
+* reopening StrictBlock
+* device reboot
+
+Store an absolute deadline rather than relying only on an in-memory countdown.
+
+Conceptually:
+
+```text
+lockedUntil = absoluteTimestamp
+```
+
+Blocking decisions should derive active state from persisted session information.
+
+When:
+
+```text
+currentTime >= lockedUntil
+```
+
+the session may expire normally.
+
+Do not silently clear a valid active session because the application UI was recreated.
+
+---
+
+# 26. StrictBlock Suggested Module Context
+
+If the architecture naturally separates into these areas, create folder context for them.
+
+## blocking/
+
+Document:
+
+* foreground-app detection
+* AccessibilityService behaviour
+* protected packages
+* active-session checks
+* blocked-app response
+
+Invariant:
+
+> Blocking logic must never expose an early unlock.
+
+## timer/
+
+Document:
+
+* absolute deadline
+* expiration
+* deadline validation
+* extension behaviour
+
+Invariant:
+
+> Active deadline can never move backwards.
+
+## data/
+
+Document:
+
+* persistent session model
+* DataStore
+* blocked packages
+* deadline
+* restoration behaviour
+
+Invariant:
+
+> Active session state survives process recreation and reboot.
+
+## ui/
+
+Document the flow:
+
+```text
+SELECT APPS
+    ↓
+SET TIMER
+    ↓
+CONFIRM
+    ↓
+ACTIVE LOCK
+    ↓
+EXPIRED
+```
+
+During ACTIVE LOCK, never expose controls for:
+
+* cancelling
+* pausing
+* taking a break
+* removing apps
+* shortening the timer
+
+Only create these module contexts if the actual project structure justifies them.
+
+---
+
+# 27. Build Portability
+
+This project must build without Antigravity and without requiring Android Studio.
+
+Keep command-line/CI builds working.
+
+A fresh environment should be capable of:
+
+```text
+clone repository
+↓
+install documented prerequisites
+↓
+run documented build command
+↓
+produce APK
+```
+
+Maintain GitHub Actions so the project can build an APK in CI.
+
+Do not depend on:
+
+* local absolute paths
+* my current computer
+* undocumented SDK configuration
+* Antigravity
+* proprietary IDE state
+
+---
+
+# 28. CI
+
+Maintain a simple GitHub Actions workflow that:
+
+1. checks out repository
+2. installs/configures required JDK
+3. prepares Gradle
+4. builds the Android project
+5. runs appropriate tests
+6. produces the APK
+7. uploads the APK as an artifact
+
+Keep CI simple.
+
+Do not add complicated deployment infrastructure unless required later.
+
+---
+
+# 29. Security & Privacy
+
+StrictBlock should remain local-only unless I explicitly request networking.
+
+Do not add:
+
+* analytics
+* tracking
+* advertising SDKs
+* telemetry
+* cloud accounts
+* unnecessary network access
+
+Never commit:
+
+* API keys
+* tokens
+* passwords
+* signing credentials
+* private keys
+
+Request only Android permissions actually necessary for functionality.
+
+---
+
+# 30. AI Handoff Protocol
+
+When I say:
+
+**"Prepare handoff"**
+
+perform a repository handoff pass.
+
+Do the following:
+
+1. Verify the current project state.
+2. Build the project if practical.
+3. Run relevant tests.
+4. Review root `AGENTS.md`.
+5. Review relevant folder `AGENTS.md`.
+6. Update `TASKS.md`.
+7. Update architecture documentation if necessary.
+8. Update decision documentation if necessary.
+9. Update changelog if appropriate.
+10. Remove stale context.
+11. Record known issues.
+12. Record unfinished work.
+13. Record the exact recommended next task.
+
+Do NOT leave important information only in your chat response.
+
+The repository must contain the handoff.
+
+---
+
+# 31. New AI Onboarding
+
+The repository should support this exact workflow:
+
+I should be able to open the project in another AI IDE and say:
+
+> **Read the root AGENTS.md, the relevant folder-level AGENTS.md files, and the relevant documentation under /docs. Inspect the repository and current git state. Do not modify anything yet. Explain the current architecture, project status, known issues and recommended next task.**
+
+The new AI should then have enough information to continue development safely without access to previous conversations.
+
+---
+
+# 32. Final Goal
+
+Optimize the repository for:
+
+**Human developer + AI coding agent collaboration.**
+
+The architecture and documentation should make it easy to:
+
+* understand the project
+* locate relevant code
+* load only relevant context
+* modify code safely
+* test changes
+* understand previous decisions
+* hand work between AI agents
+* switch IDEs without losing project knowledge
+
+The context hierarchy should be:
+
+**Root AGENTS.md**
+↓
+**Relevant documentation**
+↓
+**Nearest folder AGENTS.md**
+↓
+**Source code**
+↓
+**Tests**
+
+The repository—not the AI conversation—is the long-term memory.
+
+---
+
+# Initial Action
+
+Before implementing additional features:
+
+1. Inspect the existing repository completely enough to understand its current structure.
+2. Do NOT rewrite working code unnecessarily.
+3. Create/update the root `AGENTS.md`.
+4. Create the minimal useful `/docs` structure.
+5. Add folder-level `AGENTS.md` only for meaningful modules that actually need specialized context.
+6. Add/update the Module Context Map.
+7. Document the existing architecture rather than inventing a new architecture without reason.
+8. Verify existing build/test commands.
+9. Fix documentation that contradicts the actual implementation.
+10. Then continue development according to these rules.
+
+Keep all context files concise.
+
+**Do not over-document a small project. The purpose of this system is to make AI development faster and safer, not to create documentation overhead.**

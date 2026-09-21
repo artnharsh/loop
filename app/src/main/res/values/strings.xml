@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">loop</string>
+    <string name="accessibility_service_description">Used by loop to detect when a blocked app is opened and instantly prevent access.</string>
+</resources>

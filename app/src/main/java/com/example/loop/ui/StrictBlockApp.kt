@@ -227,7 +227,13 @@ fun TimerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     var customHours by remember { mutableStateOf(0) }
     var customMinutes by remember { mutableStateOf(15) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(text = "Set Timer", fontSize = 32.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -273,6 +279,9 @@ fun TimerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                             NumberPicker(context).apply {
                                 minValue = 0
                                 maxValue = 8
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                                    textColor = android.graphics.Color.WHITE
+                                }
                                 setOnValueChangedListener { _, _, newVal ->
                                     customHours = newVal
                                     if (customHours == 8) customMinutes = 0
@@ -290,6 +299,9 @@ fun TimerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                             NumberPicker(context).apply {
                                 minValue = 0
                                 maxValue = 59
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                                    textColor = android.graphics.Color.WHITE
+                                }
                                 setOnValueChangedListener { _, _, newVal ->
                                     customMinutes = newVal
                                     if (customHours == 8) {

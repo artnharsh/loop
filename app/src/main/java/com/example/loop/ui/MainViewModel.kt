@@ -67,7 +67,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     val name = appInfo.loadLabel(pm).toString()
                     val isSystem = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
                     
-                    val isCritical = isSystem || isCriticalPackage(packageName, defaultLauncherPackage)
+                    val isCritical = isCriticalPackage(packageName, defaultLauncherPackage)
                     
                     if (isCritical) {
                         null // Filter out critical apps so they can't even be seen/selected

@@ -227,15 +227,19 @@ fun TimerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     var customHours by remember { mutableStateOf(0) }
     var customMinutes by remember { mutableStateOf(15) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Set Timer", fontSize = 32.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
+    Scaffold(
+        topBar = {
+            @OptIn(ExperimentalMaterial3Api::class)
+            TopAppBar(title = { Text("Set Timer") })
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
         val options = listOf(
             "15 minutes" to 15 * 60 * 1000L,
@@ -350,6 +354,7 @@ fun TimerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
             ) {
                 Text("START STRICT LOCK")
             }
+        }
         }
     }
 }

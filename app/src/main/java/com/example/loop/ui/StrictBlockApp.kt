@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,7 +45,11 @@ fun StrictBlockApp(viewModel: MainViewModel) {
     val componentName = android.content.ComponentName(context, com.example.loop.blocking.StrictLockAdminReceiver::class.java)
     val isAdminActive = dpm.isAdminActive(componentName)
 
-    if (!isAccessibilityServiceEnabled(context, com.example.loop.blocking.StrictBlockAccessibilityService::class.java)) {
+    var hasSeenIntro by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+
+    if (!hasSeenIntro) {
+        IntroWarningScreen(onUnderstand = { hasSeenIntro = true })
+    } else if (!isAccessibilityServiceEnabled(context, com.example.loop.blocking.StrictBlockAccessibilityService::class.java)) {
         AccessibilityPromptScreen(context)
     } else if (!isAdminActive) {
         DeviceAdminPromptScreen(context, componentName)
@@ -503,4 +508,49 @@ fun isAccessibilityServiceEnabled(context: Context, accessibilityService: Class<
         }
     }
     return false
+}
+
+@Composable
+fun IntroWarningScreen(onUnderstand: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Warning, 
+            contentDescription = "Warning", 
+            tint = Color.Red, 
+            modifier = Modifier.size(80.dp)
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = "USE IT WISELY.",
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Black,
+            color = Color.White,
+            letterSpacing = 2.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Once you enter the lock, there is absolutely no going back.",
+            fontSize = 20.sp,
+            color = Color.LightGray,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            lineHeight = 28.sp
+        )
+        Spacer(modifier = Modifier.height(64.dp))
+        Button(
+            onClick = onUnderstand,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F), contentColor = Color.White),
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Text("I UNDERSTAND", fontSize = 18.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+        }
+    }
 }

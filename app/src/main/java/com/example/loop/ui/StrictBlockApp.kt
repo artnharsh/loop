@@ -40,8 +40,15 @@ fun StrictBlockApp(viewModel: MainViewModel) {
     val isAddingToLock by viewModel.isAddingToActiveLock.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as android.app.admin.DevicePolicyManager
+    val componentName = android.content.ComponentName(context, com.example.loop.blocking.StrictLockAdminReceiver::class.java)
+    val isAdminActive = dpm.isAdminActive(componentName)
+
     if (!isAccessibilityServiceEnabled(context, com.example.loop.blocking.StrictBlockAccessibilityService::class.java)) {
         AccessibilityPromptScreen(context)
+    } else if (!isAdminActive) {
+        DeviceAdminPromptScreen(context, componentName)
+        DeviceAdminPromptScreen(context, componentName)
     } else {
         if (lockState.isLocked && !isAddingToLock) {
             ActiveLockScreen(viewModel, lockState.lockEndTime)
@@ -96,6 +103,29 @@ fun AccessibilityPromptScreen(context: Context) {
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = { context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }) {
             Text("Enable Accessibility")
+        }
+    }
+}
+
+@Composable
+fun DeviceAdminPromptScreen(context: Context, componentName: android.content.ComponentName) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Device Administrator Required", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("loop needs Device Administrator privileges to prevent the app from being uninstalled during an active lock.", textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(onClick = { 
+            val intent = Intent(android.app.admin.DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+                putExtra(android.app.admin.DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName)
+                putExtra(android.app.admin.DevicePolicyManager.EXTRA_ADD_EXPLANATION, "This is required to prevent uninstalling the app while a lock is active.")
+            }
+            context.startActivity(intent)
+        }) {
+            Text("Enable Device Admin")
         }
     }
 }
